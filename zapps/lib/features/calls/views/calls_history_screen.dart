@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:zapps/core/models/call_model.dart';
 import 'package:zapps/core/utils/auth_storage.dart';
 import 'package:zapps/features/calls/call_service.dart';
-
+import 'package:zapps/features/calls/call_manager.dart';
 class CallsHistoryScreen extends StatefulWidget {
   const CallsHistoryScreen({super.key});
 
@@ -113,13 +113,11 @@ class _CallTile extends StatelessWidget {
         ),
         onPressed: () async {
           if (other == null) return;
-          await _service(context).initiateCall(other.alanyaId, type: call.isVideo ? 2 : 1);
+          await CallManager().startOutgoingCall(other, call.isVideo);
         },
       ),
     );
   }
-
-  CallService _service(BuildContext context) => CallService();
 
   String _formatDuree(int secs) {
     if (secs < 60) return '${secs}s';

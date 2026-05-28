@@ -1,19 +1,20 @@
 import 'dart:io' show Platform;
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 // Sur Android Emulator: 10.0.2.2 = localhost de la machine hôte
 // Sur Linux/iOS/physique: utiliser l'IP réelle ou localhost
 String get kBaseUrl {
-  if (Platform.isAndroid) {
+  if (!kIsWeb && Platform.isAndroid) {
     return 'http://10.0.2.2:3333/api/v1';
   }
-  return 'http://localhost:3333/api/v1';
+  return 'http://192.168.1.120:3333/api/v1';
 }
 
 String get kTransmitUrl {
-  if (Platform.isAndroid) {
+  if (!kIsWeb && Platform.isAndroid) {
     return 'http://10.0.2.2:3333/__transmit';
   }
-  return 'http://localhost:3333/__transmit';
+  return 'http://192.168.1.120:3333/__transmit';
 }
 
 // Clé de stockage du token

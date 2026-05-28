@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:zapps/core/api/transmit_service.dart';
+import 'package:zapps/features/calls/call_manager.dart';
 
-class MainShell extends StatelessWidget {
+class MainShell extends StatefulWidget {
   final StatefulNavigationShell navigationShell;
   const MainShell({super.key, required this.navigationShell});
 
+  @override
+  State<MainShell> createState() => _MainShellState();
+}
+
+class _MainShellState extends State<MainShell> {
   static const _tabs = [
     _TabItem(icon: Icons.chat_bubble_outline, activeIcon: Icons.chat_bubble, label: 'Discussions'),
     _TabItem(icon: Icons.circle_outlined, activeIcon: Icons.circle, label: 'Statuts'),
@@ -13,9 +20,21 @@ class MainShell extends StatelessWidget {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    _initGlobalServices();
+  }
+
+  Future<void> _initGlobalServices() async {
+    final transmit = TransmitService();
+    await transmit.connect();
+    await CallManager().init();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: navigationShell,
+      body: widget.navigationShell,
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           border: Border(
@@ -27,8 +46,8 @@ class MainShell extends StatelessWidget {
         ),
         child: NavigationBar(
           backgroundColor: const Color(0xFF1A1A2E),
-          selectedIndex: navigationShell.currentIndex,
-          onDestinationSelected: navigationShell.goBranch,
+          selectedIndex: widget.navigationShell.currentIndex,
+          onDestinationSelected: widget.navigationShell.goBranch,
           indicatorColor: const Color(0xFF6C63FF).withOpacity(0.2),
           destinations: _tabs
               .map(

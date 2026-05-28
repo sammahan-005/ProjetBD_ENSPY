@@ -3,6 +3,7 @@ import CallHistory from '#models/call_history'
 import User from '#models/user'
 import transmit from '@adonisjs/transmit/services/main'
 import vine from '@vinejs/vine'
+import { DateTime } from 'luxon'
 
 export default class CallsController {
   /**
@@ -52,7 +53,7 @@ export default class CallsController {
       idReceiver,
       type: type || 1,
       status: 1, // 1: Calling (en cours de sonnerie)
-      startTime: new Date() as any,
+      startTime: DateTime.now() as any,
     })
 
     await call.load('caller')

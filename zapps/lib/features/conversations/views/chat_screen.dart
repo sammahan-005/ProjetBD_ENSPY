@@ -5,6 +5,7 @@ import 'package:zapps/core/models/conversation_model.dart';
 import 'package:zapps/core/models/message_model.dart';
 import 'package:zapps/core/utils/auth_storage.dart';
 import 'package:zapps/core/api/transmit_service.dart';
+import 'package:zapps/features/calls/call_manager.dart';
 import 'package:zapps/features/conversations/conversation_service.dart';
 import 'package:zapps/features/conversations/conversation_service.dart' show MessageService;
 
@@ -171,6 +172,23 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ],
         ),
+        actions: [
+          if (conv != null && !conv.isGroup && conv.otherParticipant(_myId) != null) ...[
+            IconButton(
+              icon: const Icon(Icons.videocam_outlined),
+              onPressed: () {
+                CallManager().startOutgoingCall(conv.otherParticipant(_myId)!, true);
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.call_outlined),
+              onPressed: () {
+                CallManager().startOutgoingCall(conv.otherParticipant(_myId)!, false);
+              },
+            ),
+            const SizedBox(width: 8),
+          ],
+        ],
       ),
       body: Column(
         children: [

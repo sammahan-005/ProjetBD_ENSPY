@@ -31,11 +31,11 @@ import 'package:zapps/features/profile/views/edit_profile_screen.dart';
 // Contacts
 import 'package:zapps/features/contacts/views/contacts_screen.dart';
 
-final _rootKey = GlobalKey<NavigatorState>();
+final rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellKey = GlobalKey<NavigatorState>();
 
 final appRouter = GoRouter(
-  navigatorKey: _rootKey,
+  navigatorKey: rootNavigatorKey,
   initialLocation: '/splash',
   routes: [
     // ─── Ecrans hors shell ────────────────────────────────────────────────
@@ -97,7 +97,7 @@ final appRouter = GoRouter(
 
     // ─── Shell avec Bottom Navigation ─────────────────────────────────────
     StatefulShellRoute.indexedStack(
-      parentNavigatorKey: _rootKey,
+      parentNavigatorKey: rootNavigatorKey,
       builder: (context, state, navigationShell) =>
           MainShell(navigationShell: navigationShell),
       branches: [
