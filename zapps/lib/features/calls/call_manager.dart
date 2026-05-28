@@ -68,11 +68,13 @@ class CallManager {
           caller: caller,
           onAccept: () async {
             Navigator.of(context).pop();
+            await CallService().updateCallStatus(call.idCall, 2); // 2 = Accepté
             await _webrtcService.acceptCall(caller.alanyaId, call.idCall, call.type == 2);
             _showActiveCallScreen(caller.displayName, call.type == 2);
           },
-          onReject: () {
+          onReject: () async {
             Navigator.of(context).pop();
+            await CallService().updateCallStatus(call.idCall, 3); // 3 = Rejeté
           },
         ),
       ),

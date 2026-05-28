@@ -53,7 +53,6 @@ export default class CallsController {
       idReceiver,
       type: type || 1,
       status: 1, // 1: Calling (en cours de sonnerie)
-      startTime: DateTime.now() as any,
     })
 
     await call.load('caller')

@@ -86,13 +86,13 @@ class ContactService {
 
   Future<List<ContactModel>> getContacts() async {
     final res = await _api.get('/contacts');
-    final data = res.data['data'] as List<dynamic>;
+    final data = res.data as List<dynamic>;
     return data.map((e) => ContactModel.fromJson(e as Map<String, dynamic>)).toList();
   }
 
   Future<ContactModel> addContact(int friendId) async {
     final res = await _api.post('/contacts', data: {'idFriend': friendId});
-    final data = res.data['data'] as Map<String, dynamic>;
+    final data = res.data as Map<String, dynamic>;
     return ContactModel.fromJson(data);
   }
 

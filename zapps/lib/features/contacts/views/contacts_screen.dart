@@ -3,6 +3,8 @@ import 'package:zapps/core/models/contact_model.dart';
 import 'package:zapps/core/models/user_model.dart';
 import 'package:zapps/features/auth/auth_service.dart';
 import 'package:zapps/features/statuts/statut_service.dart';
+import 'package:dio/dio.dart';
+import 'package:zapps/core/utils/auth_storage.dart';
 
 class ContactsScreen extends StatefulWidget {
   const ContactsScreen({super.key});
@@ -31,6 +33,10 @@ class _ContactsScreenState extends State<ContactsScreen> {
     if (q.trim().length < 2) { setState(() => _searchResults = []); return; }
     setState(() => _searching = true);
     final results = await _authService.searchUsers(q.trim());
+    final myId = await AuthStorage.getUserId();
+    if (myId != null) {
+      results.removeWhere((u) => u.alanyaId == myId);
+    }
     if (mounted) setState(() { _searchResults = results; _searching = false; });
   }
 
@@ -41,6 +47,9 @@ class _ContactsScreenState extends State<ContactsScreen> {
       setState(() => _searchResults = []);
       await _load();
       if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${user.pseudo} ajouté aux contacts')));
+    } on DioException catch (e) {
+      final msg = e.response?.data?['error'] ?? 'Impossible d\'ajouter ce contact';
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg.toString())));
     } catch (_) {
       if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Impossible d\'ajouter ce contact')));
     }

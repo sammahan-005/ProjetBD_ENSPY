@@ -27,6 +27,8 @@ class WebRTCService {
     ]
   };
 
+  final List<Map<String, dynamic>> _queuedSignals = [];
+
   /// Initialize the media streams and ask for permissions
   Future<void> initMedia(bool isVideo) async {
     // Request permissions
@@ -126,11 +128,20 @@ class WebRTCService {
 
     await initMedia(isVideo);
     await _createPeerConnection();
+
+    // Process any signals received while ringing
+    for (var signal in _queuedSignals) {
+      await handleSignalData(signal);
+    }
+    _queuedSignals.clear();
   }
 
   /// Handle incoming signaling data from Transmit
   Future<void> handleSignalData(Map<String, dynamic> data) async {
-    if (_peerConnection == null) return;
+    if (_peerConnection == null) {
+      _queuedSignals.add(data);
+      return;
+    }
 
     final type = data['type'];
 
@@ -188,6 +199,7 @@ class WebRTCService {
 
     _currentCallId = null;
     _remoteUserId = null;
+    _queuedSignals.clear();
 
     if (onCallEnded != null) {
       onCallEnded!();
